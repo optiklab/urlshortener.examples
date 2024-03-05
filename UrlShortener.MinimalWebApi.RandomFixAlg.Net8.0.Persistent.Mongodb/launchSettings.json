@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "Docker Compose": {
+      "commandName": "DockerCompose",
+      "commandVersion": "1.0",
+      "serviceActions": {
+        "UrlShortener.MinimalWebApi.RandomFixAlg.Net8.0.Persistent.Mongodb": "StartDebugging"
+      }
+    }
+  }
+}

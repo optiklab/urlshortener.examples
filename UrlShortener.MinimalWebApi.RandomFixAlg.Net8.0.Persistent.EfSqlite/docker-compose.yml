@@ -1,0 +1,11 @@
+version: '3.4'
+
+services:
+  UrlShortener.MinimalWebApi.RandomFixAlg.Net8.0.Persistent.EfSqlite:
+    image: ${DOCKER_REGISTRY-}urlshortener.minimalwebapi.randomfixalg.net8.0.persistent.efsqlite
+    container_name: UrlShortener.MinimalWebApi.RandomFixAlg.Net8.0.Persistent.EfSqlite.Container
+    build:
+      context: .
+      dockerfile: src/Dockerfile
+    ports:
+      - "5001:443"

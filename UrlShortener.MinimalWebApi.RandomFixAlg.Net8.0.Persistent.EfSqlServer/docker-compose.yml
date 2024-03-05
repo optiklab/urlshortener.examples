@@ -1,0 +1,21 @@
+version: '3.4'
+
+services:
+  UrlShortener.MinimalWebApi.RandomFixAlg.Net8.0.Persistent.EfSqlServer:
+    image: ${DOCKER_REGISTRY-}urlshortener.minimalwebapi.randomfixalg.net8.0.persistent.efsqlserver
+    container_name: UrlShortener.MinimalWebApi.RandomFixAlg.Net8.0.Persistent.EfSqlServer.Container
+    build:
+      context: .
+      dockerfile: src/Dockerfile
+    ports:
+      - "5001:443"
+  urlshortener.db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: UrlShortenerMinimalDb
+    volumes:
+        - ./.containers/database:/var/opt/mssql/data
+    ports:
+        - "1433:1433"
+    environment:
+        ACCEPT_EULA: "Y"
+        SA_PASSWORD: "Strong_password_123!"

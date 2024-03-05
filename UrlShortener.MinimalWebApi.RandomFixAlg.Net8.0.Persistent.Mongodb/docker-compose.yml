@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  UrlShortener.MinimalWebApi.RandomFixAlg.Net8.0.Persistent.Mongodb:
+    image: ${DOCKER_REGISTRY-}urlshortener.minimalwebapi.randomfixalg.net8.0.persistent.mongodb
+    container_name: UrlShortener.MinimalWebApi.RandomFixAlg.Net8.0.Persistent.Mongodb.Container
+    depends_on:
+    - urlshortenerdb
+    build:
+      context: .
+      dockerfile: src/Dockerfile
+    ports:
+      - "5001:443"
+  urlshortenerdb:
+    image: mongo:latest
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - ./data/db:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=user
+      - MONGO_INITDB_ROOT_PASSWORD=password
