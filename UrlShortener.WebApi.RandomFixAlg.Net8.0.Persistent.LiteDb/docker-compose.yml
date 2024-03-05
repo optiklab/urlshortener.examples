@@ -1,0 +1,11 @@
+version: '3.4'
+
+services:
+  UrlShortener.WebApi.RandomFixAlg.Net8.0.Persistent.LiteDb:
+    image: ${DOCKER_REGISTRY-}urlshortener.webapi.randomfixalg.net8.0.persistent.litedb
+    container_name: UrlShortener.WebApi.RandomFixAlg.Net8.0.Persistent.LiteDb.Container
+    build:
+      context: .
+      dockerfile: src/Dockerfile
+    ports:
+      - "5001:443"
