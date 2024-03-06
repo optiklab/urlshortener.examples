@@ -7,6 +7,7 @@ using log4net.Config;
 using System.Reflection;
 using UrlShortener.WebApi.Services.Interfaces;
 using UrlShortener.WebApi.Profiles;
+using Asp.Versioning;
 
 namespace UrlShortener.WebApi
 {
@@ -35,6 +36,33 @@ namespace UrlShortener.WebApi
 
             services.AddAutoMapper(typeof(UrlProfile));
 
+            // https://www.tatvasoft.com/blog/different-methods-of-api-versioning-routing-in-asp-net-core/
+            // Using Microsoft.AspNetCore.Mvc.Versioning package
+            //services.AddApiVersioning(config =>    
+            //{
+            //    config.DefaultApiVersion = new ApiVersion(1, 0); //ApiVersion.Neutral;
+            //    config.AssumeDefaultVersionWhenUnspecified = true;
+            //    config.ReportApiVersions = true; // the version is generated and displayed in the header section as shown in the image below.
+            //    config.ApiVersionReader = new HeaderApiVersionReader("api-version");
+            //});
+
+            // https://www.milanjovanovic.tech/blog/api-versioning-in-aspnetcore
+            // Using Asp.Versioning.Http and Asp.Versioning.Mvc.ApiExplorer packages
+            services.AddApiVersioning(options =>
+            {
+                options.DefaultApiVersion = new ApiVersion(1, 0);
+                options.ReportApiVersions = true; // the version is generated and displayed in the header section as shown in the image below.
+                options.AssumeDefaultVersionWhenUnspecified = true;
+                options.ApiVersionReader = new UrlSegmentApiVersionReader();
+                //options.ApiVersionReader = ApiVersionReader.Combine(
+                //    new UrlSegmentApiVersionReader(),
+                //    new HeaderApiVersionReader("X-Api-Version"));
+            }).AddApiExplorer(options =>
+            {
+                options.GroupNameFormat = "'v'V";
+                options.SubstituteApiVersionInUrl = true;
+            });
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             services.AddEndpointsApiExplorer();
 			services.AddSwaggerGen(c =>
@@ -61,15 +89,20 @@ namespace UrlShortener.WebApi
 				app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "UrlShortener.WebApi.RandomFixAlg.Net8.0.Persistent.LiteDb v1"));
             }
 
-            app.UseMvc(); // ? from JoyEnergy
+            app.UseMvc();
 
 			app.UseHttpsRedirection();
 
-			app.UseAuthorization();
+            app.UseRouting(); // UseRouting and UseEndpoints are the two ways to register Routing
 
-            // app.MapControllers();
+            app.UseAuthorization();
 
-			// app.Run(); // From Hashi Min Web Api
+            app.UseEndpoints(app =>
+            {
+                app.MapControllers();
+            });
+
+            // app.Run(); // From Hashi Min Web Api
         }
     }
 }

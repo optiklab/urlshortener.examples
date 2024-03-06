@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Asp.Versioning;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using UrlShortener.WebApi.DTO;
@@ -9,7 +10,12 @@ using UrlShortener.WebApi.Services.Interfaces;
 
 namespace UrlShortener.WebApi.Controllers
 {
+    //[Route("[controller]", Order = 1)] // https://localhost:5001/shortener
+    //[Route("api/v{version:apiVersion}/[controller]", Order = 2)] // https://localhost:5001/shortener/api/v1.0/shortener
+
     [ApiController]
+    [Route("api/v{version:apiVersion}", Order = 1)] // https://localhost:5001/api/v1.0/
+    [ApiVersion("1.0")] // [ApiVersion("1.0", Deprecated = true)]
     public class ShortenerController : ControllerBase
     {
         private readonly IUrlShorteningService _urlShorteningService;
@@ -25,7 +31,10 @@ namespace UrlShortener.WebApi.Controllers
             _logger = logger;
         }
 
-        [HttpPost("api/shorten")]
+        // https://www.milanjovanovic.tech/blog/api-versioning-in-aspnetcore
+        // Using Asp.Versioning.Http and Asp.Versioning.Mvc.ApiExplorer packages
+        [HttpPost("shorten")]
+        [MapToApiVersion("1.0")]
         public IActionResult ShortenUrl([FromBody] ShortenUrlRequestDto requestUrlDataDto)
         {
             if (requestUrlDataDto == null)
@@ -42,7 +51,7 @@ namespace UrlShortener.WebApi.Controllers
             //var code = await _urlShorteningService.GenerateUniqueCodeAsync();
             var code = _urlShorteningService.GenerateUniqueCode();
 
-            var shortUrl = $"{this.Request.Scheme}://{this.Request.Host}/api/{code}";
+            var shortUrl = $"{this.Request.Scheme}://{this.Request.Host}/api/v1.0/{code}";
 
             var shortenedUrl = new ShortenedUrl
             {
@@ -57,7 +66,10 @@ namespace UrlShortener.WebApi.Controllers
             return Created("shortUrl", shortUrl);
         }
 
-        [HttpGet("api/{code}")]
+        // https://www.milanjovanovic.tech/blog/api-versioning-in-aspnetcore
+        // Using Asp.Versioning.Http and Asp.Versioning.Mvc.ApiExplorer packages
+        [HttpGet("{code}")]
+        [MapToApiVersion("1.0")]
         public IActionResult GetUrl(string code)
         {
             if (String.IsNullOrEmpty(code))
@@ -77,7 +89,10 @@ namespace UrlShortener.WebApi.Controllers
             return RedirectPermanent(shortenedUrl.LongUrl);
         }
 
+        // https://www.milanjovanovic.tech/blog/api-versioning-in-aspnetcore
+        // Using Asp.Versioning.Http and Asp.Versioning.Mvc.ApiExplorer packages
         [HttpGet("get")]
+        [MapToApiVersion("1.0")]
         public IActionResult GetAll()
         {
             var allShortUrlStrings = _dbContext.GetAll().Select(x => _mapper.Map<ShortenUrlResponseDto>(x)).ToList();
@@ -85,7 +100,10 @@ namespace UrlShortener.WebApi.Controllers
             return Ok($"Here is the list of urls. List: {JsonConvert.SerializeObject(allShortUrlStrings)}");
         }
 
-        [HttpGet("/delete/{code}")]
+        // https://www.milanjovanovic.tech/blog/api-versioning-in-aspnetcore
+        // Using Asp.Versioning.Http and Asp.Versioning.Mvc.ApiExplorer packages
+        [HttpGet("delete/{code}")]
+        [MapToApiVersion("1.0")]
         public IActionResult Delete(string code)
         {
             if (code is null)
