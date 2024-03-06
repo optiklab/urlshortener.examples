@@ -1,6 +1,8 @@
 # App
 
-Url Shortener built using Orleans. With storage in RAM (which is NOT persistent).
+This app based on .NET Core 7.0 Orleans engine implements simple Guid coding for generating "unique" shortened URLs.
+
+Url Shortener uses RAM as a storage (which is NOT persistent).
 
 dotnet new web -o "UrlShortener.Orleans.WebApp" -f net7.0
 

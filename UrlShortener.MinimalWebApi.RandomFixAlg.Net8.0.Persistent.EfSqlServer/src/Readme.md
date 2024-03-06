@@ -1,6 +1,6 @@
 # App
 
-This app implements Base62 coding for generating "unique" shortened URLs.
+This app based on .NET Core Minimal Web API 8.0 implements Base62 coding for generating "unique" shortened URLs.
 It persists state in SQL Server running in docker container.
 
 Problems known:

@@ -1,7 +1,14 @@
 # App
 
-This app based on .NET Core Minimal Web API 8.0 implements Base62 coding for generating "unique" shortened URLs.
-It persists state in SQL Lit file db.
+This app based on .NET Core Web API 8.0 implements Base62 coding for generating "unique" shortened URLs.
+It persists state in Lite DB file (a little .NET database).
+
+
+	<PackageReference Include="Asp.Versioning.Http" />
+	<PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" />
+	<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" />
+	<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" />
+
 
 Problems known:
 1. Getting the redirect link (from Short to Long URL) is not very performant. We must use Cache (or better, Distributed Cache here).
@@ -12,7 +19,7 @@ Problems known:
 
 ## Creating
 
-dotnet new webapi -n "UrlShortener.MinimalWebApi.RandomFixAlg.Net7.0.Persistent.EfSqlite" -lang "C#" -au none -f net7.0
+dotnet new webapi -n "UrlShortener.WebApi.RandomFixAlg.Net7.0.Persistent.LiteDb" -lang "C#" -au none -f net7.0
 
 Add Docker Compose Support https://learn.microsoft.com/en-us/visualstudio/containers/tutorial-multicontainer?view=vs-2022
 

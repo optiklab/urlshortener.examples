@@ -1,6 +1,8 @@
 # App
 
-Url Shortener built using Orleans connected to Azure.
+This app based on .NET Core 7.0 Orleans engine implements simple Guid coding for generating "unique" shortened URLs.
+
+Url Shortener connected to Azure for persistence.
 
 dotnet new web -o "UrlShortener.Orleans.WebApp" -f net7.0
 
