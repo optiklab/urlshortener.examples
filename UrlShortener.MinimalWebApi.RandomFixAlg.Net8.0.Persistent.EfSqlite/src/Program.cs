@@ -69,7 +69,7 @@ app.MapPost("/api/v{version:apiVersion}/shorten", async (
             Id = Guid.NewGuid(),
             LongUrl = request.Url,
             Code = code,
-            ShortUrl = $"{httpContext.Request.Scheme}://{httpContext.Request.Host}/api/v{httpContext.GetRequestedApiVersion().ToString()}/{code}",
+            ShortUrl = $"{httpContext.Request.Scheme}://{httpContext.Request.Host}/api/v{httpContext.GetRequestedApiVersion()}/{code}",
             CreatedOnUtc = DateTime.UtcNow
         };
 
