@@ -1,38 +1,54 @@
+using Asp.Versioning;
+using Asp.Versioning.Builder;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using UrlShortener.WebApi;
 using UrlShortener.WebApi.DTO;
-using UrlShortener.WebApi.Services.Interfaces;
-using UrlShortener.WebApi.Services;
-using UrlShortener.WebApi.Models;
 using UrlShortener.WebApi.Extentions;
-using Newtonsoft.Json;
+using UrlShortener.WebApi.Models;
+using UrlShortener.WebApi.OpenApi;
 using UrlShortener.WebApi.Profiles;
+using UrlShortener.WebApi.Services;
+using UrlShortener.WebApi.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddDbContext<ApplicationDbContext>(o => o.UseSqlite(builder.Configuration.GetConnectionString("Database")));
+builder.Services.AddScoped<IUrlShorteningService, UrlShorteningService>();
+builder.Services.AddAutoMapper(typeof(UrlProfile));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
+builder.Services.AddSwaggerGen(options => options.OperationFilter<SwaggerDefaultValues>());
 
-builder.Services.AddDbContext<ApplicationDbContext>(o => o.UseSqlite(builder.Configuration.GetConnectionString("Database")));
-
-builder.Services.AddScoped<IUrlShorteningService, UrlShorteningService>();
-
-builder.Services.AddAutoMapper(typeof(UrlProfile));
+// Versioning guidelines: https://www.milanjovanovic.tech/blog/api-versioning-in-aspnetcore
+builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.ReportApiVersions = true; // the version is generated and displayed in the header section as shown in the image below.
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ApiVersionReader = new UrlSegmentApiVersionReader();
+    //options.ApiVersionReader = ApiVersionReader.Combine(
+    //    new UrlSegmentApiVersionReader(),
+    //    new HeaderApiVersionReader("X-Api-Version"));
+}).AddApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'VVV";
+    options.SubstituteApiVersionInUrl = true;
+});
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-
-    app.ApplyMigrations();
-}
+ApiVersionSet apiVersionSet = app.NewApiVersionSet()
+    .HasApiVersion(new ApiVersion(1,0))
+    .HasApiVersion(new ApiVersion(2,0))
+    .ReportApiVersions()
+    .Build();
 
 app.MapPost("api/shorten", async (
     ShortenUrlRequestDto request,
@@ -63,7 +79,8 @@ app.MapPost("api/shorten", async (
 
         return Results.Ok(shortenedUrl.ShortUrl);
     }
-);
+).WithApiVersionSet(apiVersionSet)
+.MapToApiVersion(1, 0);
 
 // Alternative: to catch just everything...
 // app.MapFallback(async (string code, ApplicationDbContext dbContext) => ...
@@ -81,14 +98,16 @@ app.MapGet("api/{code}", async (string code, ApplicationDbContext dbContext) =>
     }
 
     return Results.Redirect(shortenedUrl.LongUrl);
-});
+}).WithApiVersionSet(apiVersionSet)
+.MapToApiVersion(1, 0); ;
 
 app.MapGet("/get", async (ApplicationDbContext dbContext, HttpContext httpContext, IMapper mapper) =>
 {
     var allShortUrlStrings = await dbContext.ShortenedUrls.Select(x => mapper.Map<ShortenUrlResponseDto>(x)).ToListAsync();
 
     return $"Here is the list of urls. List: {JsonConvert.SerializeObject(allShortUrlStrings)}";
-});
+}).WithApiVersionSet(apiVersionSet)
+.MapToApiVersion(1, 0);
 
 app.MapDelete("/delete/{code}", (string code) =>
 {
@@ -100,7 +119,27 @@ app.MapDelete("/delete/{code}", (string code) =>
 	// TODO
 
     return Results.Ok("Deleted!");
-});
+}).WithApiVersionSet(apiVersionSet)
+.MapToApiVersion(1, 0)
+.MapToApiVersion(2, 0);
+
+// Configure the HTTP request pipeline. It's very important to do AFTER all Mappings (MapGet and MapPost) to make it SEE all versions.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(
+        options =>
+        {
+            foreach (var description in app.DescribeApiVersions())
+            {
+                options.SwaggerEndpoint(
+                    $"/swagger/{description.GroupName}/swagger.json",
+                    description.GroupName);
+            }
+        });
+
+    app.ApplyMigrations();
+}
 
 app.UseHttpsRedirection();
 
