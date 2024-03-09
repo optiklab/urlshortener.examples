@@ -50,7 +50,7 @@ ApiVersionSet apiVersionSet = app.NewApiVersionSet()
     .ReportApiVersions()
     .Build();
 
-app.MapPost("api/shorten", async (
+app.MapPost("/api/v{version:apiVersion}/shorten", async (
     ShortenUrlRequestDto request,
     IUrlShorteningService urlShorteningService,
     ApplicationDbContext applicationDbContext,
@@ -69,7 +69,7 @@ app.MapPost("api/shorten", async (
             Id = Guid.NewGuid(),
             LongUrl = request.Url,
             Code = code,
-            ShortUrl = $"{httpContext.Request.Scheme}://{httpContext.Request.Host}/api/{code}",
+            ShortUrl = $"{httpContext.Request.Scheme}://{httpContext.Request.Host}/api/v{httpContext.GetRequestedApiVersion().ToString()}/{code}",
             CreatedOnUtc = DateTime.UtcNow
         };
 
@@ -85,7 +85,7 @@ app.MapPost("api/shorten", async (
 // Alternative: to catch just everything...
 // app.MapFallback(async (string code, ApplicationDbContext dbContext) => ...
 
-app.MapGet("api/{code}", async (string code, ApplicationDbContext dbContext) =>
+app.MapGet("/api/v{version:apiVersion}/{code}", async (string code, ApplicationDbContext dbContext) =>
 {
     // TODO Not very performant. We must use Cache (or better, Distributed Cache here).
 
@@ -101,7 +101,7 @@ app.MapGet("api/{code}", async (string code, ApplicationDbContext dbContext) =>
 }).WithApiVersionSet(apiVersionSet)
 .MapToApiVersion(1, 0); ;
 
-app.MapGet("/get", async (ApplicationDbContext dbContext, HttpContext httpContext, IMapper mapper) =>
+app.MapGet("/api/v{version:apiVersion}/get", async (ApplicationDbContext dbContext, HttpContext httpContext, IMapper mapper) =>
 {
     var allShortUrlStrings = await dbContext.ShortenedUrls.Select(x => mapper.Map<ShortenUrlResponseDto>(x)).ToListAsync();
 
@@ -109,7 +109,7 @@ app.MapGet("/get", async (ApplicationDbContext dbContext, HttpContext httpContex
 }).WithApiVersionSet(apiVersionSet)
 .MapToApiVersion(1, 0);
 
-app.MapDelete("/delete/{code}", (string code) =>
+app.MapDelete("/api/v{version:apiVersion}/delete/{code}", (string code) =>
 {
     if (code is null)
     {
