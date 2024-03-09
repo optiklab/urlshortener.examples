@@ -3,13 +3,6 @@
 This app based on .NET Core Web API 8.0 implements Base62 coding for generating "unique" shortened URLs.
 It persists state in Lite DB file (a little .NET database).
 
-
-	<PackageReference Include="Asp.Versioning.Http" />
-	<PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" />
-	<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" />
-	<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" />
-
-
 Problems known:
 1. Getting the redirect link (from Short to Long URL) is not very performant. We must use Cache (or better, Distributed Cache here).
 2. We might want better generation algorithm:

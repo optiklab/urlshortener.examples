@@ -10,6 +10,8 @@ using UrlShortener.WebApi.Services.Interfaces;
 
 namespace UrlShortener.WebApi.Controllers
 {
+    // Versioning guidelines: https://www.milanjovanovic.tech/blog/api-versioning-in-aspnetcore
+
     //[Route("[controller]", Order = 1)] // https://localhost:5001/shortener
     //[Route("api/v{version:apiVersion}/[controller]", Order = 2)] // https://localhost:5001/shortener/api/v1.0/shortener
 
@@ -31,8 +33,6 @@ namespace UrlShortener.WebApi.Controllers
             _logger = logger;
         }
 
-        // https://www.milanjovanovic.tech/blog/api-versioning-in-aspnetcore
-        // Using Asp.Versioning.Http and Asp.Versioning.Mvc.ApiExplorer packages
         [HttpPost("shorten")]
         [MapToApiVersion("1.0")]
         public IActionResult ShortenUrl([FromBody] ShortenUrlRequestDto requestUrlDataDto)
@@ -66,8 +66,6 @@ namespace UrlShortener.WebApi.Controllers
             return Created("shortUrl", shortUrl);
         }
 
-        // https://www.milanjovanovic.tech/blog/api-versioning-in-aspnetcore
-        // Using Asp.Versioning.Http and Asp.Versioning.Mvc.ApiExplorer packages
         [HttpGet("{code}")]
         [MapToApiVersion("1.0")]
         public IActionResult GetUrl(string code)
@@ -89,8 +87,6 @@ namespace UrlShortener.WebApi.Controllers
             return RedirectPermanent(shortenedUrl.LongUrl);
         }
 
-        // https://www.milanjovanovic.tech/blog/api-versioning-in-aspnetcore
-        // Using Asp.Versioning.Http and Asp.Versioning.Mvc.ApiExplorer packages
         [HttpGet("get")]
         [MapToApiVersion("1.0")]
         public IActionResult GetAll()
@@ -100,8 +96,6 @@ namespace UrlShortener.WebApi.Controllers
             return Ok($"Here is the list of urls. List: {JsonConvert.SerializeObject(allShortUrlStrings)}");
         }
 
-        // https://www.milanjovanovic.tech/blog/api-versioning-in-aspnetcore
-        // Using Asp.Versioning.Http and Asp.Versioning.Mvc.ApiExplorer packages
         [HttpGet("delete/{code}")]
         [MapToApiVersion("1.0")]
         public IActionResult Delete(string code)

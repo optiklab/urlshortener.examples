@@ -1,13 +1,15 @@
-﻿using UrlShortener.WebApi.Services.Interface;
+﻿using Asp.Versioning;
 using LiteDB;
-using UrlShortener.WebApi.Services;
-using Microsoft.OpenApi.Models;
 using log4net;
 using log4net.Config;
+using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
-using UrlShortener.WebApi.Services.Interfaces;
+using UrlShortener.WebApi.OpenApi;
 using UrlShortener.WebApi.Profiles;
-using Asp.Versioning;
+using UrlShortener.WebApi.Services;
+using UrlShortener.WebApi.Services.Interface;
+using UrlShortener.WebApi.Services.Interfaces;
 
 namespace UrlShortener.WebApi
 {
@@ -36,18 +38,12 @@ namespace UrlShortener.WebApi
 
             services.AddAutoMapper(typeof(UrlProfile));
 
-            // https://www.tatvasoft.com/blog/different-methods-of-api-versioning-routing-in-asp-net-core/
-            // Using Microsoft.AspNetCore.Mvc.Versioning package
-            //services.AddApiVersioning(config =>    
-            //{
-            //    config.DefaultApiVersion = new ApiVersion(1, 0); //ApiVersion.Neutral;
-            //    config.AssumeDefaultVersionWhenUnspecified = true;
-            //    config.ReportApiVersions = true; // the version is generated and displayed in the header section as shown in the image below.
-            //    config.ApiVersionReader = new HeaderApiVersionReader("api-version");
-            //});
+            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            services.AddEndpointsApiExplorer();
+            services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
+            services.AddSwaggerGen(options => options.OperationFilter<SwaggerDefaultValues>());
 
-            // https://www.milanjovanovic.tech/blog/api-versioning-in-aspnetcore
-            // Using Asp.Versioning.Http and Asp.Versioning.Mvc.ApiExplorer packages
+            // Versioning guidelines: https://www.milanjovanovic.tech/blog/api-versioning-in-aspnetcore
             services.AddApiVersioning(options =>
             {
                 options.DefaultApiVersion = new ApiVersion(1, 0);
@@ -59,16 +55,10 @@ namespace UrlShortener.WebApi
                 //    new HeaderApiVersionReader("X-Api-Version"));
             }).AddApiExplorer(options =>
             {
-                options.GroupNameFormat = "'v'V";
+                options.GroupNameFormat = "'v'VVV";
                 options.SubstituteApiVersionInUrl = true;
-            });
-
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            services.AddEndpointsApiExplorer();
-			services.AddSwaggerGen(c =>
-			{
-				c.SwaggerDoc("v1", new OpenApiInfo { Title = "UrlShortener.WebApi.RandomFixAlg.Net8.0.Persistent.LiteDb", Version = "v1" });
-			});
+            })
+            .EnableApiVersionBinding();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -80,20 +70,13 @@ namespace UrlShortener.WebApi
 			ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 			log.Info("Log config file loaded");
 
-			// app.ConfigureExceptionHandler(log);
-
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-				app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "UrlShortener.WebApi.RandomFixAlg.Net8.0.Persistent.LiteDb v1"));
-            }
+            // app.ConfigureExceptionHandler(log);
 
             app.UseMvc();
 
-			app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
 
-            app.UseRouting(); // UseRouting and UseEndpoints are the two ways to register Routing
+            app.UseRouting();
 
             app.UseAuthorization();
 
@@ -102,7 +85,14 @@ namespace UrlShortener.WebApi
                 app.MapControllers();
             });
 
-            // app.Run(); // From Hashi Min Web Api
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+
+                app.UseSwagger();
+
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1"));
+            }
         }
     }
 }
