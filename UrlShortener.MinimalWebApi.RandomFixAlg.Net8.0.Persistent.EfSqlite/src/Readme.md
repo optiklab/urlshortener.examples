@@ -9,6 +9,8 @@ Problems known:
 	- Pregenerate random values in advance
 	- Use some other algorithm
 	- etc.
+3. A click counter for the tokens in question
+4. Freeing up tokens based of off last activity
 
 ## Creating
 
