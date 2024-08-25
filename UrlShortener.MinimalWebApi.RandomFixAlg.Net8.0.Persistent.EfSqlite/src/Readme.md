@@ -20,18 +20,22 @@ Add Docker Compose Support https://learn.microsoft.com/en-us/visualstudio/contai
 
 https://www.twilio.com/blog/containerize-your-aspdotnet-core-application-and-sql-server-with-docker
 
-## DB storage
+## DB Sqlite storage
 
 $> dotnet tool install --global dotnet-ef
-$> dotnet add package Microsoft.EntityFrameworkCore.Sqlite -v 7.0.15
-$> dotnet add package Microsoft.EntityFrameworkCore.Tools -v 7.0.15
+$> dotnet add package Microsoft.EntityFrameworkCore.Sqlite -v 8.0.2
+$> dotnet add package Microsoft.EntityFrameworkCore.Tools -v 8.0.2
 
 $> dotnet ef database update   - just in case we need to create db file and check its content. But it is not needed cuz db will be created in container.
 
 OR in VS Developer Console
 
-$> NuGet\Install-Package Microsoft.EntityFrameworkCore.Sqlite -Version 7.0.15
-$> NuGet\Install-Package Microsoft.EntityFrameworkCore.Tools -Version 7.0.15
+$> NuGet\Install-Package Microsoft.EntityFrameworkCore.Sqlite -Version 8.0.2
+$> NuGet\Install-Package Microsoft.EntityFrameworkCore.Tools -Version 8.0.2
+
+## Datatypes in Postgres
+
+https://www.sqlite.org/datatype3.html
 
 ## DB migrations
 
