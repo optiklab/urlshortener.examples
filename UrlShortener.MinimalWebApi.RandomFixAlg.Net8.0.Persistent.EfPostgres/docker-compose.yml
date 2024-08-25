@@ -1,0 +1,36 @@
+version: '3.4'
+
+services:
+  UrlShortener.MinimalWebApi.RandomFixAlg.Net8.0.Persistent.EfPostgres:
+    image: ${DOCKER_REGISTRY-}urlshortener.minimalwebapi.randomfixalg.net8.0.persistent.efpostgres
+    container_name: UrlShortener.MinimalWebApi.RandomFixAlg.Net8.0.Persistent.EfPostgres.Container
+    build:
+      context: .
+      dockerfile: src/Dockerfile
+    ports:
+      - "5001:443"
+    environment:
+      - ConnectionStrings__Database=Server=UrlShortenerMinimalDb;Database=ShortenerDb;User Id=SA;Password=Strong_password_123!;
+    depends_on:
+      - urlshortener.db
+    networks:
+      - urlshortenernetwork
+
+  urlshortener.db:
+    image: postgres
+    restart: always
+    container_name: UrlShortenerMinimalDb
+    shm_size: 128mb
+    ports:
+        - "5432:5432"
+    environment:
+        POSTGRES_PASSWORD: Strong_password_123!
+        POSTGRES_USER: SA
+        POSTGRES_DB: ShortenerDb
+    networks:
+      - urlshortenernetwork
+
+networks:
+  urlshortenernetwork:
+    driver: bridge
+    
