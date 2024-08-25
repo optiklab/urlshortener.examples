@@ -11,6 +11,10 @@ services:
       - "5001:443"
     environment:
       - ConnectionStrings__Database=Server=UrlShortenerMinimalDb;Database=ShortenerDb;User Id=SA;Password=Strong_password_123!;MultipleActiveResultSets=true;Trust Server Certificate=True
+    depends_on:
+      - urlshortener.db
+    networks:
+      - urlshortenernetwork
 
   urlshortener.db:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -22,3 +26,10 @@ services:
     environment:
         ACCEPT_EULA: "Y"
         SA_PASSWORD: "Strong_password_123!"
+    networks:
+      - urlshortenernetwork
+
+networks:
+  urlshortenernetwork:
+    driver: bridge
+    
