@@ -20,24 +20,39 @@ Add Docker Compose Support https://learn.microsoft.com/en-us/visualstudio/contai
 
 https://www.twilio.com/blog/containerize-your-aspdotnet-core-application-and-sql-server-with-docker
 
-## DB storage
+## DB Postgres storage
 
 $> dotnet tool install --global dotnet-ef
-$> dotnet add package Microsoft.EntityFrameworkCore.Sqlite -v 7.0.15
-$> dotnet add package Microsoft.EntityFrameworkCore.Tools -v 7.0.15
+$> dotnet add package Npgsql.EntityFrameworkCore.PostgreSQL -v 8.0.4
+$> dotnet add package Microsoft.EntityFrameworkCore.Tools -v 8.0.2
 
 $> dotnet ef database update   - just in case we need to create db file and check its content. But it is not needed cuz db will be created in container.
 
 OR in VS Developer Console
 
-$> NuGet\Install-Package Microsoft.EntityFrameworkCore.Sqlite -Version 7.0.15
-$> NuGet\Install-Package Microsoft.EntityFrameworkCore.Tools -Version 7.0.15
+$> dotnet add package Npgsql.EntityFrameworkCore.PostgreSQL -v 8.0.4
+$> dotnet add package Microsoft.EntityFrameworkCore.Tools -v 8.0.2
+
+## Docker connection documentation
+
+https://hub.docker.com/_/postgres
+
+Examples:
+$> docker pull postgres:alpine
+$> docker run --name urlshortener-service -e POSTGRES_PASSWORD=my_super_pass -e POSTGRES_USER=sa -p 5432:5432 postgres
+
+$> docker ps -a
+$> docker rm CONTAINER_ID
+
+$> docker images
+$> docker images rm IMAGE_ID
+
+## Datatypes in Postgres
+
+https://www.postgresql.org/docs/current/datatype.html
+
+https://maciejwalkowiak.com/blog/postgres-uuid-primary-key/
 
 ## DB migrations
 
 $> dotnet ef migrations add InitialCreate
-
-## Database location
-
-Database created at c:\Users\[USER]\AppData\Local\urlshortener.db
-

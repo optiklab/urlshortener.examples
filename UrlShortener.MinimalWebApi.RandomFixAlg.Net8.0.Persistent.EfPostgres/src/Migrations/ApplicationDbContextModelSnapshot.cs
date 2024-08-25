@@ -12,7 +12,7 @@ namespace UrlShortener.WebApi.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "7.0.15");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.2");
 
             modelBuilder.Entity("UrlShortener.WebApi.Models.ShortenedUrl", b =>
                 {
