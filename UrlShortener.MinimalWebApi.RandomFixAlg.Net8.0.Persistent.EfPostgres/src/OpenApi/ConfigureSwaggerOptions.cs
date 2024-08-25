@@ -32,7 +32,7 @@ namespace UrlShortener.WebApi.OpenApi
             {
                 Title = $"UrlShortener.MinimalWebApi.RandomFixAlg.Net8.0.Persistent.EfPostgres {description.ApiVersion.ToString()}",
                 Version = description.ApiVersion.ToString(),
-                Description = "Url Shortener API made with Minimal WebApi .NET 8.0, persisted in SQLite (via Entity Framework) and Base62 algorithm of generating unique shortened values.",
+                Description = "Url Shortener API made with Minimal WebApi .NET 8.0, persisted in Postgres (via Entity Framework) and Base62 algorithm of generating unique shortened values.",
                 Contact = new OpenApiContact { Name = "Anton Yarkov", Email = "anton.yarkov@gmail.com" },
                 License = new OpenApiLicense { Name = "MIT", Url = new Uri("https://opensource.org/licenses/MIT") }
             };

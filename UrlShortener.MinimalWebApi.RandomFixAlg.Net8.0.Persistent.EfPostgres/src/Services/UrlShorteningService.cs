@@ -28,8 +28,7 @@ namespace UrlShortener.WebApi.Services
             {
                 // Variant 1
                 // var random = new Random();
-                // var code = new string(Enumerable.Repeat(codeChars, NumberOfCharsInShortLink)
-                //	.Select(x => x[random.Next(x.Length)]).ToArray());
+                // var code = new string(Enumerable.Repeat(codeChars, NumberOfCharsInShortLink).Select(x => x[random.Next(x.Length)]).ToArray());
 
                 // Variant 2
                 //    string urlsafe = string.Empty;

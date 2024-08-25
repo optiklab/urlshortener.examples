@@ -9,6 +9,9 @@ services:
       dockerfile: src/Dockerfile
     ports:
       - "5001:443"
+    environment:
+      - ConnectionStrings__Database=Server=UrlShortenerMinimalDb;Database=ShortenerDb;User Id=SA;Password=Strong_password_123!;MultipleActiveResultSets=true;Trust Server Certificate=True
+
   urlshortener.db:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: UrlShortenerMinimalDb
