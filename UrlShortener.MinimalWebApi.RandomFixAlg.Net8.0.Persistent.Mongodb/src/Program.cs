@@ -138,8 +138,8 @@ app.MapDelete("/api/v{version:apiVersion}/delete/{code}", (string code) =>
     {
         return Results.NotFound();
     }
-	
-	// TODO
+
+// TODO
 
     return Results.Ok("Deleted!");
 }).WithApiVersionSet(apiVersionSet)
