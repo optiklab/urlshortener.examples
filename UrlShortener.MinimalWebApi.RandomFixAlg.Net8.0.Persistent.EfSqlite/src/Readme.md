@@ -41,7 +41,7 @@ $> dotnet ef migrations add InitialCreate
 
 Database created at c:\Users\[USER]\AppData\Local\urlshortener.db
 
-## Datatypes in Postgres
+## Datatypes in Sqlite
 
 https://www.sqlite.org/datatype3.html
 
