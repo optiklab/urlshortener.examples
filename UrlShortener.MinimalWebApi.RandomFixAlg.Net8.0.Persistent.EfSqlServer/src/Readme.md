@@ -21,7 +21,7 @@ Add Docker Compose Support https://learn.microsoft.com/en-us/visualstudio/contai
 
 https://www.twilio.com/blog/containerize-your-aspdotnet-core-application-and-sql-server-with-docker
 
-## DB storage
+## DB SQLServer storage
 
 $> dotnet tool install --global dotnet-ef
 $> dotnet add package Microsoft.EntityFrameworkCore.SqlServer -v 7.0.13
@@ -39,6 +39,12 @@ $> dotnet ef migrations add InitialCreate
 ## Database location
 
 Docker Container
+
+## Datatypes in Postgres
+
+https://learn.microsoft.com/en-us/sql/t-sql/data-types/data-types-transact-sql
+
+https://learn.microsoft.com/en-us/sql/t-sql/data-types/uniqueidentifier-transact-sql
 
 ## How to Run
 

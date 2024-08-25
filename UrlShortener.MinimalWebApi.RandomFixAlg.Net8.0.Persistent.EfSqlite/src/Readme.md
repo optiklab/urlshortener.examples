@@ -33,10 +33,6 @@ OR in VS Developer Console
 $> NuGet\Install-Package Microsoft.EntityFrameworkCore.Sqlite -Version 8.0.2
 $> NuGet\Install-Package Microsoft.EntityFrameworkCore.Tools -Version 8.0.2
 
-## Datatypes in Postgres
-
-https://www.sqlite.org/datatype3.html
-
 ## DB migrations
 
 $> dotnet ef migrations add InitialCreate
@@ -44,4 +40,12 @@ $> dotnet ef migrations add InitialCreate
 ## Database location
 
 Database created at c:\Users\[USER]\AppData\Local\urlshortener.db
+
+## Datatypes in Postgres
+
+https://www.sqlite.org/datatype3.html
+
+## DB migrations
+
+$> dotnet ef migrations add InitialCreate
 

@@ -21,9 +21,12 @@ namespace UrlShortener.WebApi.Extentions
 
             // Don't call EnsureCreated() before Migrate(). EnsureCreated() bypasses Migrations to create the schema, which causes Migrate() to fail.
 
-			// If it fails because DB already created during your debugging...simply comment this line :)
-			// In prod, it's better to use "EF migration scripts like $> dotnet ef database update ...".
-            dbContext.Database.Migrate();
+            // If it fails because DB already created during your debugging...simply comment this line :)
+            // In prod, it's better to use "EF migration scripts like $> dotnet ef database update ...".
+            if (dbContext.Database.GetPendingMigrations().Any())
+            {
+                dbContext.Database.Migrate();
+            }
         }
     }
 }

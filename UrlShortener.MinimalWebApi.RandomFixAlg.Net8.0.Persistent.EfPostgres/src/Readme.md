@@ -33,6 +33,14 @@ OR in VS Developer Console
 $> dotnet add package Npgsql.EntityFrameworkCore.PostgreSQL -v 8.0.4
 $> dotnet add package Microsoft.EntityFrameworkCore.Tools -v 8.0.2
 
+## DB migrations
+
+$> dotnet ef migrations add InitialCreate
+
+## Database location
+
+Docker Container
+
 ## Docker connection documentation
 
 https://hub.docker.com/_/postgres
